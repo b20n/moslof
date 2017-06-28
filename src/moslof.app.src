@@ -1,0 +1,11 @@
+{application, moslof, [
+    {description, ""},
+    {vsn, git},
+    {registered, []},
+    {applications, [
+        kernel,
+        stdlib
+    ]},
+    {mod, {moslof_app, []}},
+    {env, []}
+]}.
