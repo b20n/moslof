@@ -45,14 +45,20 @@ new(Name) ->
     new(Name, 10000, 1000, 1, 100000, 3).
 
 new(Name, Size, Resolution, Min, Max, SigFig) ->
-    moslof_windowed_histogram_sup:start_child(
+    Child = moslof_windowed_histogram_sup:start_child(
         Name,
         Size,
         Resolution,
         Min,
         Max,
         SigFig
-    ).
+    ),
+    case Child of
+        {ok, _} ->
+            ok;
+        {error, Reason} ->
+            {error, Reason}
+    end.
 
 update(Name, Value) ->
     [{_, Histogram}] = ets:lookup(?WINDOWED_HISTOGRAM_TABLE, Name),

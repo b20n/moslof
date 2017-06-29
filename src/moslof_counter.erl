@@ -36,7 +36,10 @@ list([Key|_]=Ks) ->
 
 new(Name) ->
     Counters = [{{Name, N}, 0} || N <- lists:seq(0, ?WIDTH - 1)],
-    ets:insert(?COUNTER_TABLE, Counters).
+    case ets:insert_new(?COUNTER_TABLE, Counters) of
+        true -> ok;
+        false -> {error, exists}
+    end.
 
 inc(Name) ->
     ets:update_counter(?COUNTER_TABLE, key(Name), 1).

@@ -20,7 +20,10 @@ list([Key|_]=Ks) ->
     list([ets:next(?GAUGE_TABLE, Key)|Ks]).
 
 new(Name) ->
-    ets:insert(?GAUGE_TABLE, {Name, 0}).
+    case ets:insert_new(?GAUGE_TABLE, {Name, 0}) of
+        true -> ok;
+        false -> {error, exists}
+    end.
 
 update(Name, Value) ->
     ets:insert(?GAUGE_TABLE, {Name, Value}).

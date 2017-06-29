@@ -21,7 +21,10 @@ list([Key|_]=Ks) ->
 
 new(Name) ->
     {ok, Histogram} = bukkit_hdr:new(),
-    ets:insert(?HISTOGRAM_TABLE, {Name, Histogram}).
+    case ets:insert_new(?HISTOGRAM_TABLE, {Name, Histogram}) of
+        true -> ok;
+        false -> {error, exists}
+    end.
 
 update(Name, Value) ->
     [{_, Histogram}] = ets:lookup(?HISTOGRAM_TABLE, Name),
