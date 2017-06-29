@@ -2,6 +2,7 @@
 -behavior(gen_server).
 
 -export([
+    list/0,
     new/1,
     update/2,
     read/1,
@@ -31,6 +32,14 @@
     windows,
     last
 }).
+
+list() ->
+    list([ets:first(?WINDOWED_HISTOGRAM_TABLE)]).
+
+list(['$end_of_table'|Ks]) ->
+    Ks;
+list([Key|_]=Ks) ->
+    list([ets:next(?WINDOWED_HISTOGRAM_TABLE, Key)|Ks]).
 
 new(Name) ->
     new(Name, 10000, 1000, 1, 100000, 3).

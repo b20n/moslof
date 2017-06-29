@@ -1,6 +1,7 @@
 -module(moslof_counter).
 
 -export([
+    list/0,
     new/1,
     inc/1,
     inc/2,
@@ -14,6 +15,24 @@
 -include("moslof.hrl").
 
 -define(WIDTH, 16).
+
+list() ->
+    lists:foldl(
+        fun({Key, _}, Acc) ->
+            case Acc of
+                [] -> [Key];
+                [Key|_] -> Acc;
+                _ -> [Key|Acc]
+            end
+        end,
+        [],
+        list([ets:first(?COUNTER_TABLE)])
+    ).
+
+list(['$end_of_table'|Ks]) ->
+    Ks;
+list([Key|_]=Ks) ->
+    list([ets:next(?COUNTER_TABLE, Key)|Ks]).
 
 new(Name) ->
     Counters = [{{Name, N}, 0} || N <- lists:seq(0, ?WIDTH - 1)],
