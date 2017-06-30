@@ -4,6 +4,7 @@
 -export([
     list/0,
     new/1,
+    new/6,
     update/2,
     read/1,
     clear/1,
