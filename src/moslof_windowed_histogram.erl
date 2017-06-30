@@ -111,7 +111,8 @@ init([Name, Size, Resolution, Min, Max, SigFig]) ->
 
 handle_call(read, _From, State0) ->
     {State, Remaining} = maybe_slide_windows(State0),
-    {reply, {ok, bukkit_hdr:read(State#state.windows)}, State, Remaining};
+    Read = bukkit_hdr:read(State#state.windows),
+    {reply, moslof_histogram:format_statistics(Read), State, Remaining};
 handle_call(clear, _From, State0) ->
     #state{
         size = Size,
