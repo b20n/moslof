@@ -46,19 +46,24 @@ new(Name) ->
     new(Name, 10000, 1000, 1, 100000, 3).
 
 new(Name, Size, Resolution, Min, Max, SigFig) ->
-    Child = moslof_windowed_histogram_sup:start_child(
-        Name,
-        Size,
-        Resolution,
-        Min,
-        Max,
-        SigFig
-    ),
-    case Child of
-        {ok, _} ->
-            ok;
-        {error, Reason} ->
-            {error, Reason}
+    case ets:lookup(?WINDOWED_HISTOGRAM_PIDS_TABLE, Name) of
+        [] ->
+            Child = moslof_windowed_histogram_sup:start_child(
+                Name,
+                Size,
+                Resolution,
+                Min,
+                Max,
+                SigFig
+            ),
+            case Child of
+                {ok, _} ->
+                    ok;
+                {error, Reason} ->
+                    {error, Reason}
+            end;
+        _ ->
+            {error, exists}
     end.
 
 update(Name, Value) ->
